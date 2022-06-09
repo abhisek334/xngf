@@ -63,19 +63,49 @@ def stats(update, context):
     sendMessage(stats, context.bot, update.message)
 
 
+def stats(update, context):
+    currentTime = get_readable_time(time.time() - botStartTime)
+    total, used, free = shutil.disk_usage('.')
+    total = get_readable_file_size(total)
+    used = get_readable_file_size(used)
+    free = get_readable_file_size(free)
+    sent = get_readable_file_size(psutil.net_io_counters().bytes_sent)
+    recv = get_readable_file_size(psutil.net_io_counters().bytes_recv)
+    cpuUsage = psutil.cpu_percent(interval=0.5)
+    memory = psutil.virtual_memory().percent
+    disk = psutil.disk_usage('/').percent
+    stats = f'<b>╭──《🌐 Bᴏᴛ Sᴛᴀᴛɪsᴛɪᴄs 🌐》</b>\n' \
+            f'<b>│</b>\n' \
+            f'<b>├  ▶ Rᴜɴɴɪɴɢ Sɪɴᴄᴇ ▶ : {currentTime}</b>\n' \
+            f'<b>├  💾 Tᴏᴛᴀʟ Dɪsᴋ Sᴘᴀᴄᴇ : {total}</b>\n' \
+            f'<b>├  📀 Tᴏᴛᴀʟ Usᴇᴅ Sᴘᴀᴄᴇ : {used}</b>\n' \
+            f'<b>├  💿 Tᴏᴛᴀʟ Fʀᴇᴇ Sᴘᴀᴄᴇ : {free}</b>\n' \
+            f'<b>├  🔼 Tᴏᴛᴀʟ Uᴘʟᴏᴀᴅ : {sent}</b>\n' \
+            f'<b>├  🔽 Tᴏᴛᴀʟ Dᴏᴡɴʟᴏᴀᴅ : {recv}</b>\n' \
+            f'<b>├  🖥️ Cᴘᴜ : {cpuUsage}%</b>\n' \
+            f'<b>├  🎮 Rᴀᴍ : {memory}%</b>\n' \
+            f'<b>├  💽 Dɪsᴋ : {disk}%</b>\n' \
+            f'<b>│</b>\n' \
+            f'<b>╰──《 ☣️ @XdaAbhi ☣️ 》</b>'
+    update.effective_message.reply_photo(IMAGE_URL, stats, parse_mode=ParseMode.HTML)
+
+
 def start(update, context):
-    buttons = ButtonMaker()
-    buttons.buildbutton("Repo", "https://github.com/abhiseksh/NO-FOKIN-BAN-BY-XDA")
-    buttons.buildbutton("Owner TG", "https://t.me/XdaAbhi")
+    start_string = f'''
+This bot can mirror all your links to Google Drive!
+Type /{BotCommands.HelpCommand} to get a list of available commands
+'''
+    buttons = button_build.ButtonMaker()
+    buttons.buildbutton("Repo", "https://github.com/abhiseksh/HEROKU-SECURITY-BYPASS-BY_XdaABHI")
+    buttons.buildbutton("Channel", "https://t.me/XdaAbhi")
     reply_markup = InlineKeyboardMarkup(buttons.build_menu(2))
     if CustomFilters.authorized_user(update) or CustomFilters.authorized_chat(update):
-        start_string = f'''
-MIRROR BOT POWERED BY @XdaAbhi🔥 DEPLOYED ON AWS!
-Type /{BotCommands.HelpCommand} to get a list of service👙 list
-'''
-        sendMarkup(start_string, context.bot, update.message, reply_markup)
-    else:
-        sendMarkup('Not Authorized user, deploy your own MIRROR Bot', context.bot, update.message, reply_markup)
+        if update.message.chat.type == "private" :
+            sendMessage(f"Hey I'm Alive 🙂\nSince: <code>{uptime}</code>", context.bot, update)
+        else :
+            sendMarkup(start_string, context.bot, update, reply_markup)
+    else :
+        sendMarkup(f"Oops! not a Authorized user.\nPlease deploy your own <b>XdaAbhi-Gdrive-MirrorBot</b>.", context.bot, update, reply_markup)
 
 def restart(update, context):
     restart_message = sendMessage("Restarting...", context.bot, update.message)
